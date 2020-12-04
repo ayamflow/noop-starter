@@ -2,11 +2,10 @@
   "name": "noop-starter",
   "version": "1.0.0",
   "description": "A barebones, node-based web project starter",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "dev": "node noop/index.mjs --watch",
-    "build": "node noop/index.mjs",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node noop/index.mjs"
   },
   "repository": {
     "type": "git",
