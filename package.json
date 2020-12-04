@@ -1,0 +1,30 @@
+{
+  "name": "noop-starter",
+  "version": "1.0.0",
+  "description": "A barebones, node-based web project starter",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node noop/index.mjs --watch",
+    "build": "node noop/index.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayamflow/noop-starter.git"
+  },
+  "keywords": [
+    "boilerplate",
+    "starter",
+    "web",
+    "js"
+  ],
+  "author": "Florian Morel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ayamflow/noop-starter/issues"
+  },
+  "homepage": "https://github.com/ayamflow/noop-starter#readme",
+  "devDependencies": {
+    "esbuild": "^0.8.18"
+  }
+}
