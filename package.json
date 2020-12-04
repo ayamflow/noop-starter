@@ -1,7 +1,7 @@
 {
   "name": "noop-starter",
   "version": "1.0.0",
-  "description": "A barebones, node-based web project starter",
+  "description": "A barebones nodejs web project starter",
   "main": "index.js",
   "scripts": {
     "dev": "node noop/index.mjs --watch",
