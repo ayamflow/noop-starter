@@ -2,34 +2,34 @@ import utils from './utils.mjs'
 import esbuild from 'esbuild'
 
 export function build(options = {}) {
-    setup()
+    setup('prod')
 
     return esbuild.buildSync(getParams(options))
 }
 
 export function watch(options = {}) {
-    setup()
-
     const port = options.port || 8000
     if (options.port) delete options.port
+
+    setup('dev', port)
 
     return esbuild.serve({ port }, getParams(options))
         .then(server => {
             process.on('SIGINT', function () {
                 server.stop()
-                console.log('\n[noop] Dev server ended.');
+                console.log('\n[noop] esbuild server stopped.');
                 process.exit()
             })
 
-            console.log(`[noop] Dev server started on http://localhost:${port}`);
+            console.log(`[noop] esbuild server started on http://localhost:${port}`);
         })
-        .catch(() => process.exit(1))
+        // .catch(() => process.exit(1))
 }
 
-function setup() {
+function setup(env, port) {
     utils.clean('static')
     // utils.copyAssets('static')
-    utils.copyHtml('static')
+    utils.copyHtml('static', port)
 }
 
 function getParams(options) {

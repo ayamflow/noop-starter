@@ -1,3 +1,4 @@
+import { serve } from './server.mjs'
 import { build, watch } from './build.mjs'
 
 let cmd = process.argv.slice(2)
@@ -13,7 +14,11 @@ function prod() {
 }
 
 function dev() {
+    serve({
+        port: 3000
+    })
     watch({
+        port: 8080,
         env: 'dev',
         sourcemap: true,
         color: true,

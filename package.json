@@ -25,5 +25,9 @@
   "homepage": "https://github.com/ayamflow/noop-starter#readme",
   "devDependencies": {
     "esbuild": "^0.8.18"
+  },
+  "dependencies": {
+    "polka": "^0.5.2",
+    "use-static": "^0.1.1"
   }
 }
