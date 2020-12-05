@@ -53,8 +53,16 @@ function copyAssets(dest) {
     copy the index.html template
     - dest {string} the output fodler
 */
-function copyHtml(dest) {
-    childProcess.execSync(`cp index.html ${dest}/index.html`).toString()
+function copyHtml(dest, port) {
+    // childProcess.execSync(`cp index.html ${dest}/index.html`).toString()
+
+    let file = fs.readFileSync('index.html', 'utf8')
+    if (port) {
+        file = file.replace('{{script}}', `<script src="http://localhost:${port}/index.js"></script>`)
+    } else {
+        file = file.replace('{{script}}', `<script src="./bundle.js"></script>`)
+    }
+    fs.writeFileSync(`${dest}/index.html`, file)
 }
 
 export default {
