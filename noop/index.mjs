@@ -8,7 +8,7 @@ else prod()
 
 function prod() {
     build({
-        env: 'prod',
+        env: 'production',
         minify: true
     })
 }

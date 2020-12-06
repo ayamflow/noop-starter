@@ -3,7 +3,7 @@ import glslify from 'esbuild-glslify'
 import esbuild from 'esbuild'
 
 export function build(options = {}) {
-    setup('prod')
+    setup('production')
 
     return esbuild.build(getParams(options))
 }
@@ -53,7 +53,7 @@ function getParams(options) {
 }
 
 function setEnvironment(options) {
-    if (!options.env) options.env = 'prod'
+    if (!options.env) options.env = 'production'
     let env = {
         define: {
             'process.env.NODE_ENV': `\"${options.env}\"`
