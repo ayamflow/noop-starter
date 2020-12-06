@@ -1,4 +1,4 @@
-import utils from './utils.mjs'
+import * as utils from './utils.mjs'
 import esbuild from 'esbuild'
 
 export function build(options = {}) {

@@ -6,7 +6,7 @@ import childProcess from 'child_process'
     Generates a unique version string based on
     time and git commits number
 */
-function getVersion() {
+export function getVersion() {
     let version = childProcess.execSync('git rev-list HEAD --count').toString()
     let date = new Date(Date.now())
     
@@ -34,7 +34,7 @@ function getVersion() {
     completely empties a folder, recursively
     - path {string} the folder path to clean
 */
-function clean(path) {
+export function clean(path) {
     fs.rmdirSync(path, { recursive: true })
     childProcess.execSync(`mkdir ${path}`).toString()
 }
@@ -44,7 +44,7 @@ function clean(path) {
     copy the source assets to the output fodler
     - dest {string} the output fodler
 */
-function copyAssets(dest) {
+export function copyAssets(dest) {
     childProcess.execSync(`cp -rf assets ${dest}/assets`).toString()
 }
 
@@ -53,7 +53,7 @@ function copyAssets(dest) {
     copy the index.html template
     - dest {string} the output fodler
 */
-function copyHtml(dest, port) {
+export function copyHtml(dest, port) {
     // childProcess.execSync(`cp index.html ${dest}/index.html`).toString()
 
     let file = fs.readFileSync('index.html', 'utf8')
@@ -63,11 +63,4 @@ function copyHtml(dest, port) {
         file = file.replace('{{script}}', `<script src="./bundle.js"></script>`)
     }
     fs.writeFileSync(`${dest}/index.html`, file)
-}
-
-export default {
-    getVersion,
-    clean,
-    copyAssets,
-    copyHtml,
 }
