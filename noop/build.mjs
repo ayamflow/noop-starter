@@ -1,4 +1,5 @@
 import * as utils from './utils.mjs'
+import glslify from 'esbuild-glslify'
 import esbuild from 'esbuild'
 
 export function build(options = {}) {
@@ -35,7 +36,7 @@ function setup(env, port) {
 function getParams(options) {
     let env = setEnvironment(options)
     let version = utils.getVersion()
-
+    
     return Object.assign({
         entryPoints: ['src/index.js'],
         bundle: true,
@@ -48,6 +49,7 @@ function getParams(options) {
         },
         outfile: 'static/bundle.js',
         banner: `// noop build ${version}`,
+        plugins: [glslify()]
     }, env, options)
 }
 

@@ -24,9 +24,12 @@
   },
   "homepage": "https://github.com/ayamflow/noop-starter#readme",
   "devDependencies": {
-    "esbuild": "^0.8.18"
+    "esbuild": "^0.8.18",
+    "esbuild-glslify": "github:ayamflow/esbuild-glslify"
   },
   "dependencies": {
+    "glsl-layer": "^1.0.0",
+    "glslify": "^7.1.1",
     "polka": "^0.5.2",
     "use-static": "^0.1.1"
   }
