@@ -5,7 +5,7 @@ import esbuild from 'esbuild'
 export function build(options = {}) {
     setup('prod')
 
-    return esbuild.buildSync(getParams(options))
+    return esbuild.build(getParams(options))
 }
 
 export function watch(options = {}) {
