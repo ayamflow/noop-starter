@@ -18,7 +18,7 @@ function dev() {
         port: 3000
     })
     watch({
-        port: 8080,
+        port: 8000,
         env: 'dev',
         sourcemap: true,
         color: true,

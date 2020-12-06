@@ -1,6 +1,6 @@
 import * as utils from './utils.mjs'
-import glslify from 'esbuild-glslify'
 import esbuild from 'esbuild'
+import { styles } from './styles.mjs'
 
 export function build(options = {}) {
     setup('production')
@@ -30,7 +30,7 @@ export function watch(options = {}) {
 function setup(env, port) {
     utils.clean('static')
     // utils.copyAssets('static')
-    utils.copyHtml('static', port)
+    utils.templateHtml('static', port)
 }
 
 function getParams(options) {
@@ -48,7 +48,8 @@ function getParams(options) {
             '.png': 'file'
         },
         outfile: 'static/bundle.js',
-        banner: `// noop build ${version}`
+        banner: `// noop build ${version}`,
+        plugins: [styles()]
     }, env, options)
 }
 

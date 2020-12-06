@@ -24,10 +24,13 @@
   },
   "homepage": "https://github.com/ayamflow/noop-starter#readme",
   "devDependencies": {
-    "esbuild": "^0.8.18"
-  },
-  "dependencies": {
+    "autoprefixer": "^10.0.4",
+    "esbuild": "^0.8.18",
     "polka": "^0.5.2",
+    "postcss": "^8.1.14",
+    "postcss-nested": "^5.0.2",
+    "postcss-normalize": "^9.0.0",
     "use-static": "^0.1.1"
-  }
+  },
+  "dependencies": {}
 }
