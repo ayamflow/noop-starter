@@ -48,8 +48,7 @@ function getParams(options) {
             '.png': 'file'
         },
         outfile: 'static/bundle.js',
-        banner: `// noop build ${version}`,
-        plugins: [glslify()]
+        banner: `// noop build ${version}`
     }, env, options)
 }
 
