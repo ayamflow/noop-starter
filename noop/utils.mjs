@@ -1,5 +1,16 @@
 import fs from 'fs'
 import childProcess from 'child_process'
+import chokidar from 'chokidar'
+
+function getHour(date) {
+    return `
+        ${date.getHours()}
+        h
+        ${date.getMinutes().toString().padStart(2, 0)}
+        m
+        ${date.getSeconds().toString().padStart(2, 0)}
+    `.replace(/\n/g, '').replace(/\ /g, '')
+}
 
 /*
     getVersion
@@ -18,13 +29,7 @@ export function getVersion() {
         ${date.getFullYear()}
     `.replace(/\n/g, '').replace(/\ /g, '')
 
-    let time = `
-        ${date.getHours()}
-        h
-        ${date.getMinutes().toString().padStart(2, 0)}
-        m
-        ${date.getSeconds().toString().padStart(2, 0)}
-    `.replace(/\n/g, '').replace(/\ /g, '')
+    let time = getHour(date)
 
     return `${version}. (${day} ${time})`.replace(/\n/g, '')
 }
@@ -44,8 +49,19 @@ export function clean(path) {
     copy the source assets to the output fodler
     - dest {string} the output fodler
 */
-export function copyAssets(dest) {
+export function copyAssets(dest, options = {}) {
     childProcess.execSync(`cp -rf assets ${dest}/assets`).toString()
+
+    if (options.watch) {
+        console.log('[noo] Watching ./assets folder');
+        chokidar.watch('./assets', {
+            ignored: /(^|[\/\\])\../,
+        }).on('all', (event, path) => {
+            let time = getHour(new Date(Date.now()))
+            console.log(`[noop] ${event} ${path} (${time})`)
+            childProcess.execSync(`cp -rf ${path} ${dest}/assets`).toString()
+        })
+    }
 }
 
 /*

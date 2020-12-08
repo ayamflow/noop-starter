@@ -29,7 +29,7 @@ export function watch(options = {}) {
 
 function setup(env, port) {
     utils.clean('static')
-    // utils.copyAssets('static')
+    utils.copyAssets('static', {watch: env == 'dev'})
     utils.templateHtml('static', port)
 }
 
