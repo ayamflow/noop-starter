@@ -18,7 +18,12 @@ function getHour(date) {
     time and git commits number
 */
 export function getVersion() {
-    let version = childProcess.execSync('git rev-list HEAD --count').toString()
+    let version = 0
+    try {
+        version = childProcess.execSync('git rev-list HEAD --count').toString()
+    } catch(e) {
+        console.log('[noop] You need at least 1 commit to build');
+    }
     let date = new Date(Date.now())
     
     let day = `
