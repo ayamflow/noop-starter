@@ -1,5 +1,7 @@
 import fs from 'fs'
+import path from 'path'
 import childProcess from 'child_process'
+import zlib from 'zlib'
 import chokidar from 'chokidar'
 
 function getHour(date) {
@@ -86,4 +88,36 @@ export function templateHtml(dest, port) {
         file = file.replace('{{script}}', `./bundle.css`)
     }
     fs.writeFileSync(`${dest}/index.html`, file)
+}
+
+export function gzip() {
+    const path = './static/bundle.js'
+    const file = fs.createReadStream(path)
+    const stream = fs.createWriteStream(path.replace('.js', '.js.gz'))
+    const zip = zlib.createGzip()
+    return new Promise((resolve, reject) => {
+        file.pipe(zip).pipe(stream).on('finish', (err) => {
+          if (err) return reject(err)
+          else resolve()
+        })
+    })
+}
+
+export async function filesize() {
+    const dir = './static'
+    let sizes = {}
+    let files = await fs.promises.readdir(dir)
+    await Promise.all(files.map(async file => {
+        let stats = await fs.promises.stat(path.join(dir, file))
+        let i = Math.floor(Math.log(stats.size) / Math.log(1024))
+        let suffix = ['B', 'KB', 'MB', 'GB', 'TB'][i]
+        let size = (stats.size / Math.pow(1024, i)).toString()
+        let index = size.indexOf('.')
+        if (index > -1) {
+            sizes[file] = `${size.slice(0, index + 3)}${suffix}`
+        } else {
+            sizes[file] = `${size}${suffix}`
+        }
+    }))
+    console.log(sizes)
 }

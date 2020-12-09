@@ -5,7 +5,10 @@ import { styles } from './styles.mjs'
 export function build(options = {}) {
     setup('production')
 
-    return esbuild.build(getParams(options))
+    return esbuild.build(getParams(options)).then(async () => {
+        await utils.gzip()
+        utils.filesize()
+    })
 }
 
 export function watch(options = {}) {
