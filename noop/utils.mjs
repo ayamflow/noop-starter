@@ -3,14 +3,16 @@ import path from 'path'
 import childProcess from 'child_process'
 import zlib from 'zlib'
 import chokidar from 'chokidar'
+import { log, error } from './log.mjs'
 
 function getHour(date) {
     return `
         ${date.getHours()}
-        h
+        :
         ${date.getMinutes().toString().padStart(2, 0)}
-        m
+        :
         ${date.getSeconds().toString().padStart(2, 0)}
+        s
     `.replace(/\n/g, '').replace(/\ /g, '')
 }
 
@@ -24,7 +26,7 @@ export function getVersion() {
     try {
         version = childProcess.execSync('git rev-list HEAD --count').toString()
     } catch(e) {
-        console.log('[noop] You need at least 1 commit to build');
+        error('You need at least 1 commit to build');
     }
     let date = new Date(Date.now())
     
@@ -57,15 +59,16 @@ export function clean(path) {
     - dest {string} the output fodler
 */
 export function copyAssets(dest, options = {}) {
-    childProcess.execSync(`cp -rf assets ${dest}/assets`).toString()
+    const src = './assets'
+    childProcess.execSync(`cp -rf ${src} ${dest}/assets`).toString()
 
     if (options.watch) {
-        console.log('[noo] Watching ./assets folder');
-        chokidar.watch('./assets', {
+        log('Watching ${src} folder');
+        chokidar.watch(src, {
             ignored: /(^|[\/\\])\../,
         }).on('all', (event, path) => {
             let time = getHour(new Date(Date.now()))
-            console.log(`[noop] ${event} ${path} (${time})`)
+            log(`${event} ${path} (${time})`)
             childProcess.execSync(`cp -rf ${path} ${dest}/assets`).toString()
         })
     }
@@ -119,5 +122,5 @@ export async function filesize() {
             sizes[file] = `${size}${suffix}`
         }
     }))
-    console.log(sizes)
+    log(sizes)
 }

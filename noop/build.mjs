@@ -1,5 +1,6 @@
 import * as utils from './utils.mjs'
 import esbuild from 'esbuild'
+import { log } from './log.mjs'
 import { styles } from './styles.mjs'
 
 export function build(options = {}) {
@@ -21,11 +22,11 @@ export function watch(options = {}) {
         .then(server => {
             process.on('SIGINT', function () {
                 server.stop()
-                console.log('\n[noop] esbuild server stopped.');
+                log('\nesbuild server stopped.')
                 process.exit()
             })
 
-            console.log(`[noop] esbuild server started on http://localhost:${port}`);
+            log(`esbuild server started`)
         })
         // .catch(() => process.exit(1))
 }
