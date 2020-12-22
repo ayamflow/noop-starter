@@ -3,7 +3,8 @@ import path from 'path'
 import childProcess from 'child_process'
 import zlib from 'zlib'
 import chokidar from 'chokidar'
-import { log, error } from './log.mjs'
+import kleur from 'kleur'
+import { log, error, warning } from './log.mjs'
 
 function getHour(date) {
     return `
@@ -12,7 +13,6 @@ function getHour(date) {
         ${date.getMinutes().toString().padStart(2, 0)}
         :
         ${date.getSeconds().toString().padStart(2, 0)}
-        s
     `.replace(/\n/g, '').replace(/\ /g, '')
 }
 
@@ -63,12 +63,12 @@ export function copyAssets(dest, options = {}) {
     childProcess.execSync(`cp -rf ${src} ${dest}/assets`).toString()
 
     if (options.watch) {
-        log('Watching ${src} folder');
+        log(`${kleur.underline('Watching')} ${kleur.yellow(src)} folder`)
         chokidar.watch(src, {
             ignored: /(^|[\/\\])\../,
         }).on('all', (event, path) => {
             let time = getHour(new Date(Date.now()))
-            log(`${event} ${path} (${time})`)
+            log(`${event} ${kleur.yellow(path)} ${kleur.blue('(' + time + ')')}`)
             childProcess.execSync(`cp -rf ${path} ${dest}/assets`).toString()
         })
     }
@@ -122,5 +122,5 @@ export async function filesize() {
             sizes[file] = `${size}${suffix}`
         }
     }))
-    log(sizes)
+    warning(sizes)
 }
