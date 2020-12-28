@@ -49,7 +49,7 @@ export function getVersion() {
     - path {string} the folder path to clean
 */
 export function clean(path) {
-    fs.rmdirSync(path, { recursive: true })
+    fs.rmSync(path, { recursive: true, force: true })
     childProcess.execSync(`mkdir ${path}`).toString()
 }
 
