@@ -122,5 +122,8 @@ export async function filesize() {
             sizes[file] = `${size}${suffix}`
         }
     }))
-    warning(sizes)
+    
+    for (let size in sizes) {
+        warning(`${size}: ${sizes[size]}`)
+    }
 }
