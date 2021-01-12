@@ -2,9 +2,11 @@ import fs from 'fs'
 import path from 'path'
 import childProcess from 'child_process'
 import zlib from 'zlib'
-import chokidar from 'chokidar'
+import CheapWatch from 'cheap-watch'
 import kleur from 'kleur'
 import { log, error, warning } from './log.mjs'
+
+const watchers = []
 
 function getHour(date) {
     return `
@@ -58,20 +60,43 @@ export function clean(path) {
     copy the source assets to the output fodler
     - dest {string} the output fodler
 */
-export function copyAssets(dest, options = {}) {
+export async function copyAssets(dest, options = {}) {
     const src = './assets'
     childProcess.execSync(`cp -rf ${src} ${dest}/assets`).toString()
 
     if (options.watch) {
+        const watcher = new CheapWatch({
+            dir: path.resolve(src),
+            filter: ({path}) => {
+                return path != 'assets' && !path.match(/(^|[\/\\])\../)
+            }
+        })
+        watchers.push(watcher)
+        await watcher.init()
         log(`${kleur.underline('Watching')} ${kleur.yellow(src)} folder`)
-        chokidar.watch(src, {
-            ignored: /(^|[\/\\])\../,
-        }).on('all', (event, path) => {
+
+        watcher.on('+', event => {
             let time = getHour(new Date(Date.now()))
-            log(`${event} ${kleur.yellow(path)} ${kleur.blue('(' + time + ')')}`)
-            childProcess.execSync(`cp -rf ${path} ${dest}/assets`).toString()
+            log(`${event.isNew ? 'add' : 'update'} ${kleur.yellow(path.join(src, event.path))} ${kleur.blue('(' + time + ')')}`)
+            childProcess.execSync(`cp -rf ${path.join(src, event.path)} ${dest}/assets`).toString()
+        })
+        watcher.on('-', event => {
+            let time = getHour(new Date(Date.now()))
+            log(`remove ${kleur.yellow(path.join(src, event.path))} ${kleur.blue('(' + time + ')')}`)
+            childProcess.execSync(`rm -rf ${path.join(dest, src, event.path)}`).toString()
         })
     }
+}
+
+export async function watch(folder) {
+    const watcher = new CheapWatch({ dir: path.resolve(folder) })
+    await watcher.init()
+    watchers.push(watcher)
+    return watcher
+}
+
+export function stopWatch() {
+    watchers.forEach(watcher => watcher.close())
 }
 
 /*
