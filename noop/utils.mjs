@@ -8,6 +8,12 @@ import { log, error, warning } from './log.mjs'
 
 const watchers = []
 
+export function setup(env) {
+    clean('static')
+    copyAssets('static', {watch: env == 'dev'})
+    templateHtml('static')
+}
+
 function getHour(date) {
     return `
         ${date.getHours()}
@@ -104,17 +110,10 @@ export function stopWatch() {
     copy the index.html template
     - dest {string} the output fodler
 */
-export function templateHtml(dest, port) {
-    // childProcess.execSync(`cp index.html ${dest}/index.html`).toString()
-
+export function templateHtml(dest) {
     let file = fs.readFileSync('index.html', 'utf8')
-    if (port) {
-        file = file.replace('{{script}}', `http://localhost:${port}/index.js`)
-        file = file.replace('{{styles}}', `http://localhost:${port}/index.css`)
-    } else {
-        file = file.replace('{{script}}', `./bundle.js`)
-        file = file.replace('{{script}}', `./bundle.css`)
-    }
+    file = file.replace('{{script}}', `./bundle.js`)
+    file = file.replace('{{styles}}', `./bundle.css`)
     fs.writeFileSync(`${dest}/index.html`, file)
 }
 

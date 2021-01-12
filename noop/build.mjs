@@ -4,7 +4,7 @@ import { log } from './log.mjs'
 import { styles } from './styles.mjs'
 
 export function build(options = {}) {
-    setup('production')
+    utils.setup('production')
 
     return esbuild.build(getParams(options)).then(async () => {
         await utils.gzip()
@@ -31,13 +31,10 @@ export function watch(options = {}) {
         // .catch(() => process.exit(1))
 }
 
-function setup(env, port) {
-    utils.clean('static')
-    utils.copyAssets('static', {watch: env == 'dev'})
-    utils.templateHtml('static', port)
 }
 
 function getParams(options) {
+    if (options.port) delete options.port
     let env = setEnvironment(options)
     let version = utils.getVersion()
     
