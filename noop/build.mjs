@@ -1,5 +1,8 @@
 import * as utils from './utils.mjs'
+import * as client from './client.mjs'
+import { serve } from './server.mjs'
 import esbuild from 'esbuild'
+import kleur from 'kleur'
 import { log } from './log.mjs'
 import { styles } from './styles.mjs'
 
@@ -12,25 +15,43 @@ export function build(options = {}) {
     })
 }
 
-export function watch(options = {}) {
-    const port = options.port || 8000
-    if (options.port) delete options.port
-
-    setup('dev', port)
-
-    return esbuild.serve({ port }, getParams(options))
-        .then(server => {
-            process.on('SIGINT', function () {
-                server.stop()
-                log('\nesbuild server stopped.')
-                process.exit()
-            })
-
-            log(`esbuild server started`)
+export async function watch(options = {}) {
+    const port = options.port
+    const server = serve({ port })
+    const params = getParams(options)
+    
+    function rebuild() {
+        return esbuild.build(params)
+        .then(() => {
+            client.hideError()
         })
-        // .catch(() => process.exit(1))
-}
+        .catch(error => {
+            client.showError(error)
+        })
+    }
+    
+    utils.setup('dev')
+    client.init(server)
+    await rebuild()
+    
+    const watcher = await utils.watch('./src')
+    watcher.on('+', async event => {
+        if (!event.path.match(/(.js)|(.css)/)) return
 
+        log(`code change: ${event.path}`)
+        
+        await rebuild()
+        if (event.path.includes('.css')) client.reloadStyles()
+    })
+    
+    process.on('SIGINT', function () {
+        utils.stopWatch()
+        console.log('\n')
+        log(`Stopped server (${kleur.underline('Watching')}/${kleur.underline('Serving')}). Bye!`)
+        console.log('\n')
+        client.close()
+        process.exit()
+    })
 }
 
 function getParams(options) {
