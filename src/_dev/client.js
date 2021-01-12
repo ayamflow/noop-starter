@@ -34,19 +34,24 @@ function hideError() {
 }
 
 function initError(error, type) {
-    let line = `${error.location.lineText.slice(0, error.location.column)}<em>${error.location.lineText.slice(error.location.column, error.location.column + error.location.length)}</em>${error.location.lineText.slice(error.location.column + error.location.length)}`
+    let loc = error.location
+
+    // Add ^ underneath error character to mimic terminal output
+    let line = `${loc.lineText.slice(0, loc.column)}`
+    line += `<em>${loc.lineText.slice(loc.column, loc.column + loc.length)}</em>`
+    line += `${loc.lineText.slice(loc.column + loc.length)}`
 
     let el = document.createElement('div')
     el.classList.add('dev-error')
     el.innerHTML = `
         <div class="wrapper">
             <div class="type"> ${type}</div>
-            <div class="file"> > ${error.location.file} line ${error.location.line}, column ${error.location.column}</div>
+            <div class="file"> > ${loc.file} line ${loc.line}, column ${loc.column}</div>
             <br/><br/>
             <div class="text"> ${error.text}</div>
             <div class="code">
                 ...<br/><br/>
-                <span>${error.location.line}|</span> &nbsp;&nbsp;&nbsp;${line}
+                <span>${loc.line}|</span> &nbsp;&nbsp;&nbsp;${line}
                 <br/><br/>...
             </div>
         </div>
